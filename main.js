@@ -4,6 +4,7 @@ var nunjucks = require('nunjucks');
 var bodyParser = require('body-parser');
 var orm = require('orm');
 
+// Connect to mysql. You'll want to replace this with relevant info for your setup
 app.use(orm.express("mysql://clipasaurus:clippass@localhost/clipasaurus", {
 	define: function (db, models, next) {
 
@@ -21,6 +22,7 @@ app.use(orm.express("mysql://clipasaurus:clippass@localhost/clipasaurus", {
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
 
+// Handle statics
 app.use('/js',express.static(__dirname+'/static/js'));
 app.use('/fonts',express.static(__dirname+'/static/fonts'));
 app.use('/images',express.static(__dirname+'/static/images'));
@@ -37,6 +39,7 @@ app.get('/clip/*', function (req, res) {
 
 })
 
+// Save new clip info and redirect to permalink (In a serious production environment, you'd cache here)
 app.post('/newclip', function (req, res) {
 	var newRecord = {};
 	newRecord.youtube_id = req.body.video_id
@@ -47,12 +50,15 @@ app.post('/newclip', function (req, res) {
 	});
 })
 
+// Index
 app.get('/', function (req, res) {
   nunjucks.configure({ autoescape: true });
   var response = nunjucks.render('templates/index.html', { });
   res.send(response)
 })
-// accept POST request on the homepage
+
+// Handle YouTube url/id post. Parsing should be much more comprehensive here, but for now I'm supporting
+// regular urls like 'https://www.youtube.com/watch?v=nd7q1op4BVw' and id's like 'nd7q1op4BVw'
 app.post('/', function (req, res) {
   var url = req.param('youtube_url');
   var video_id;
@@ -76,6 +82,6 @@ var server = app.listen(3000, function () {
   var host = server.address().address
   var port = server.address().port
 
-  console.log('Example app listening at http://%s:%s', host, port)
+  console.log('Clipasaurus listening at http://%s:%s', host, port)
 
 })
