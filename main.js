@@ -33,10 +33,13 @@ app.get('/clip/*', function (req, res) {
 	var video_id;
 	var urlParts = req.url.split('/');
 	var thisClip = req.models.clip.get(urlParts[2], function (err, clip) {
+		if (err) {
+			res.send(404, 'Sorry, this clip does not exist.');
+			return;
+		}
 		var response = nunjucks.render('templates/clip.html', { video_id: clip['youtube_id'], start: Math.ceil(clip['start']), stop: Math.ceil(clip['stop']) });
 	  	res.send(response)
 	});
-
 })
 
 // Save new clip info and redirect to permalink (In a serious production environment, you'd cache here)
