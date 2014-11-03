@@ -1,0 +1,29 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CLIPASAURUS</title>
+  <meta name="description" content="CLIPASAURUS">
+  <link href="/css/styles.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<div id="outer_wrapper">
+  <div id="inner_wrapper">
+    <h1>CLIPASAURUS</h1>
+    <h2>Enter a YouTube URL or YouTube video ID</h2>
+    <form id="urlForm" name="input" action="/" method="POST">
+    <input id="url_input" type="text" name="youtube_url">
+    </form>
+    <div class="button" id="submitButton">Let's Do This Thing</div>
+  </div>
+</div>
+<script src="/js/jquery.min.js"></script>
+<script>
+  $('#submitButton').bind('click', function(){
+    $('#urlForm').submit();
+  })
+</script>
+</body>
+</html>

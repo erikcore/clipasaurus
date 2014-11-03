@@ -1,0 +1,142 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CLIPASAURUS</title>
+  <meta name="description" content="CLIPASAURUS">
+  <link href="/css/styles.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/js/slider/jquery.nouislider.css" type="text/css" />
+</head>
+
+<body>
+<div id="outer_wrapper">
+  <div id="inner_wrapper">
+    <h1>CLIPASAURUS</h1>
+    <h2>Trim your track by dragging the purple triangles below.</h2>
+    <div class="video-container">
+      <div id="player"></div>
+    </div>
+    <div id="progress">
+      <div id="progressFill"></div>
+    </div>
+    <div class="slider"></div>
+    <div class="button" id="playButton">play</div>
+    <div class="button" id="stopButton">pause</div>
+    <div class="button" id="playClipFromBeginning">play clip from beginning</div>
+    <div class="button" id="saveClip">save</div>
+  </div>
+  <form id="newClipForm" name="newClip" action="/newclip" method="post">
+    <input type="hidden" name="start" id="startTime">
+    <input type="hidden" name="stop" id="stopTime">
+    <input type="hidden" name="video_id" value="{{ video_id }}">
+  </form>
+</div>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/slider/jquery.nouislider.all.min.js"></script>
+<script>
+      var start, stop;
+
+      // Load YouTube iframe player api
+      var tag = document.createElement('script');
+
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      // 3. This function creates an <iframe> (and YouTube player)
+      //    after the API code downloads.
+      var player;
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+          height: '390',
+          width: '640',
+          videoId: '{{ video_id }}',
+          events: {
+            'onReady': onPlayerReady,
+            'onStateChange': stateChange,
+          },
+          playerVars: {
+            controls: 0,
+            showinfo: 0,
+            autohide: 1
+          }
+        });
+        
+      }
+
+      function stateChange(event) {
+        if ( event.data == 1 ) {
+          player.playVideo();
+          pollForStopTime();
+        }
+      }
+
+      function onPlayerReady(event) {
+        start = 0;
+        stop = player.getDuration();
+        $('#startTime').val(start);
+        $('#stopTime').val(stop);
+        var slider = $('.slider')
+        slider.noUiSlider({
+          start: [ 0, player.getDuration() ],
+          range: {
+            'min': 0,
+            'max': player.getDuration()
+          },
+          connect: true
+        });
+        slider.bind('slide', function() {
+          if ( slider.val()[0] != start ) {
+            if ( slider.val()[0] > start ) {
+              player.seekTo(slider.val()[0]);
+            }
+          }
+          start = slider.val()[0];
+          stop = slider.val()[1];
+          $('#startTime').val(start);
+          $('#stopTime').val(stop);
+        })
+      }
+
+      function loadVideo(event) {      
+        event.target.cueVideoById({ 
+          videoId: '{{ video_id }}',
+          startSeconds: 0,
+          endSeconds: null
+        });
+      }
+
+      $('#playClipFromBeginning').bind('click', function() {
+        player.seekTo(start);
+        player.playVideo();
+      })
+
+      $('#playButton').bind('click', function() {
+        var slider = $('.slider')
+          player.playVideo();
+          pollForStopTime();
+      })
+      var stopTimePoll;
+      $('#stopButton').bind('click', function() {
+        player.pauseVideo();
+        clearInterval(stopTimePoll);
+      })
+      $('#saveClip').bind('click', function() {
+        $('#newClipForm').submit();
+      })
+      function pollForStopTime() {
+        stopTimePoll = setInterval(function(){
+          if (player.getCurrentTime() >= $('.slider').val()[1]) {
+            player.pauseVideo();
+          }
+          else {
+            $('#progressFill').width(player.getCurrentTime()/player.getDuration() * 100 + '%')
+          }
+        }, 500)
+      }
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,82 @@
+@font-face {
+  font-family: ultra;
+  src: url(/fonts/Ultra.ttf);
+}
+@font-face {
+  font-family: ultra-expanded;
+  src: url(/fonts/StintUltraExpanded-Regular.ttf);
+}
+html {
+  text-align: center;
+  background-color: #a95;
+  color:#543;
+  padding-bottom:50px;
+}
+h1 {
+  font-family: ultra;
+  font-size: 54px;
+  margin: 50px 0px 0px 0px;
+}
+h2 {
+  font: 26px/42px 'ultra-expanded', 'Helvetica Neue', Helvetica, sans-serif;
+}
+.video-container {
+  position: relative;
+  padding-bottom: 56.25%;
+  padding-top: 30px;
+  height: 0;
+  overflow: hidden;
+}
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.slider {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.button {
+  background: #543;
+  margin-left: auto;
+  margin-right: auto;
+  color: white;
+  font-family: ultra-expanded;
+  padding: 10px 20px 10px 20px;
+  border-radius: 15px;
+  display:inline-block;
+  text-align:center;
+  cursor: pointer; cursor: hand;
+  text-decoration: none;
+}
+#progress {
+  background:whitesmoke;
+  width: 100%;
+  height: 20px;
+  margin-top: 10px;
+}
+#progressFill {
+  height: 20px;
+  background:#E0E0E0;
+}
+#url_input {
+  width: 100%;
+  height: 40px;
+  border: 0;
+  border-radius: 15px;
+  margin-bottom: 25px;
+  font-family: ultra-expanded;
+  padding: 0px 10px 0px 19px;
+  font-size: 17px;
+  box-sizing:border-box;
+  -moz-box-sizing:border-box;
+}
+#outer_wrapper {
+  width: 100%;
+}
+#inner_wrapper {
+  max-width: 700px;
+  margin: 0 auto;
+}
